@@ -27,10 +27,18 @@
     <%= f.label :status %><br>
     <%= f.text_field :status %>
   </div>
+
+  <div class="field">
+    <%= f.label :category %><br>
+
+    <%= f.select("category_id", Category.all.collect {|p| [ p.name, p.id ] }, { include_blank: true }) %>
+  </div>
+
   <div class="field">
     <%= f.label :published_date %><br>
     <%= f.datetime_select :published_date %>
   </div>
+
   <div class="actions">
     <%= f.submit %>
   </div>
