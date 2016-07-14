@@ -6,5 +6,7 @@ class Item < ActiveRecord::Base
     
     validates :status, inclusion: { in: %w(available pending sold expired banned),
                      message: "%{value} is not a valid status" }
-    
+
+    scope :find_items, -> (status, seller_id) { where(status: status).where(seller_id: seller_id) }
+    scope :category_items, -> (category_id) {where(category_id: category_id)}
 end

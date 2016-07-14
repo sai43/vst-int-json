@@ -1,5 +1,5 @@
 class ItemsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_seller!, except: %i|index show sold_items category_items|
   before_action :set_item, only: [:show, :edit, :update, :destroy]
   
   # GET /items
@@ -26,7 +26,7 @@ class ItemsController < ApplicationController
   # POST /items.json
   def create
     @item = Item.new(item_params)
-    @item.seller_id = current_user.id
+    @item.seller_id = current_seller.id
     respond_to do |format|
       if @item.save
         format.html { redirect_to @item, notice: 'Item was successfully created.' }
@@ -41,7 +41,7 @@ class ItemsController < ApplicationController
   # PATCH/PUT /items/1
   # PATCH/PUT /items/1.json
   def update
-    @item.seller_id = current_user.id
+    @item.seller_id = current_seller.id
     respond_to do |format|
       if @item.update(item_params)
         format.html { redirect_to @item, notice: 'Item was successfully updated.' }
@@ -62,6 +62,21 @@ class ItemsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  def sold_items
+   puts  @sold_items = Item.find_items('available', 1)
+    render json: {items: @sold_items, count: @sold_items.count}, status: :ok
+  end
+
+  def category_items
+    category_id = 1
+    # cname = Category.find(category_id).name
+    # sname = Item.last.seller.name
+    @category_items = Item.category_items(category_id)
+    render json: {items: @category_items, count: @category_items.count}, status: :ok
+  end
+
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
