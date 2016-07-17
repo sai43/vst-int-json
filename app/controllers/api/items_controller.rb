@@ -1,4 +1,4 @@
-class ItemsController < ApplicationController
+class Api::ItemsController < ApplicationController
   before_action :authenticate_seller!, except: %i|index show sold_items category_items|
   before_action :set_item, only: [:show, :edit, :update, :destroy]
   
@@ -159,5 +159,5 @@ class ItemsController < ApplicationController
         :category_id,
         :seller_id)
     end
-  end
-
+  
+end
