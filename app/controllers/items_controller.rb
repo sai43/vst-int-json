@@ -6,11 +6,43 @@ class ItemsController < ApplicationController
   # GET /items.json
   def index
     @items = Item.all
+    @items_response = Hash.new 
+    @items_response[:items] = Array.new 
+    @items.each do |item|
+      temp_item = Hash.new
+      temp_item[:title] = item.title
+      temp_item[:description] = item.description
+      temp_item[:price] = item.price
+      temp_item[:status] = item.status
+      unless item.status.eql?('banned')
+       temp_item[:published_date] = item.published_date
+       temp_item[:Seller_Name] = Seller.find(item.seller_id).name
+      end
+
+      @items_response[:items] << temp_item
+    end
+    render json: {response: @items_response, count: @items_response[:items].count }, status: :ok
   end
 
   # GET /items/1
   # GET /items/1.json
   def show
+    @item_response = Hash.new 
+    @item_response[:item] = Array.new 
+
+      temp_item = Hash.new
+      temp_item[:title] = @item.title
+      temp_item[:description] = @item.description
+      temp_item[:price] = @item.price
+      temp_item[:status] = @item.status
+      unless @item.status.eql?('banned')
+       temp_item[:published_date] = @item.published_date
+       temp_item[:Seller_Name] = Seller.find(@item.seller_id).name
+      end
+      @item_response[:item] << temp_item
+    
+    render json: {response: @item_response, count: @item_response[:item].count }, status: :ok
+
   end
 
   # GET /items/new
@@ -64,7 +96,7 @@ class ItemsController < ApplicationController
   end
 
   def sold_items
-   puts  @sold_items = Item.find_items('available', 1)
+    @sold_items = Item.find_items('sold', 1)
     render json: {items: @sold_items, count: @sold_items.count}, status: :ok
   end
 
@@ -73,7 +105,21 @@ class ItemsController < ApplicationController
     # cname = Category.find(category_id).name
     # sname = Item.last.seller.name
     @category_items = Item.category_items(category_id)
-    render json: {items: @category_items, count: @category_items.count}, status: :ok
+    @items_response = Hash.new 
+    @items_response[:items] = Array.new 
+    @category_items.each do |item|
+      temp_item = Hash.new
+      temp_item[:title] = item.title
+      temp_item[:description] = item.description
+      temp_item[:price] = item.price
+      temp_item[:status] = item.status
+      unless item.status.eql?('banned')
+       temp_item[:published_date] = item.published_date
+       temp_item[:Seller_Name] = Seller.find(item.seller_id).name
+      end
+      @items_response[:items] << temp_item
+    end
+    render json: {items: @items_response, count: @items_response[:items].count}, status: :ok
   end
 
 
